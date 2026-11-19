@@ -1,0 +1,58 @@
+name: Deploy Hotel Booking Backend to Azure
+ 
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+      - '.github/workflows/deploy-backend.yml'
+ 
+  workflow_dispatch:
+ 
+env:
+  DOTNET_VERSION: '8.0.x'
+  PROJECT_PATH: 'backend/HotelBooking.API/HotelBooking.API.csproj'
+  AZURE_WEBAPP_NAME: 'hotelbooking-api-prabu'
+ 
+jobs:
+  build-and-deploy:
+ 
+    runs-on: ubuntu-latest
+ 
+    steps:
+ 
+      # Step 1: Get source code from GitHub
+      - name: Checkout source code
+        uses: actions/checkout@v4
+ 
+      # Step 2: Install .NET SDK
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+ 
+      # Step 3: Restore NuGet packages
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+ 
+      # Step 4: Build application
+      - name: Build application
+        run: dotnet build ${{ env.PROJECT_PATH }} --configuration Release --no-restore
+ 
+      # Step 5: Run tests
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build
+        continue-on-error: false
+ 
+      # Step 6: Publish application
+      - name: Publish application
+        run: dotnet publish ${{ env.PROJECT_PATH }} --configuration Release --no-build -o ./publish
+ 
+      # Step 7: Deploy to Azure App Service
+      - name: Deploy to Azure
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./publish

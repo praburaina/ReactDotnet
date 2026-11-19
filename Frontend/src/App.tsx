@@ -1,6 +1,7 @@
  
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "./services/api";
  
 interface Hotel {
   id: number;
@@ -16,7 +17,7 @@ function App() {
  
   useEffect(() => {
  
-    axios.get<Hotel[]>("http://localhost:5018/api/hotels")
+    axios.get<Hotel[]>(`${API_BASE_URL}/hotels`)
       .then(response => {
         setHotels(response.data);
       })
