@@ -27,6 +27,7 @@ app.MapGet("/api/hotels", () =>
         new {id=1,Name="TajHotels",city="chennai",Price=5000},
         new {id=2,Name="TajHotels",city="chennai",Price=5000},
         new {id=3,Name="TajHotels",city="chennai",Price=5000},
+        new {id=4,Name="TajHotels",city="chennai",Price=5000},
     };
 
     return Results.Ok(hotels);
