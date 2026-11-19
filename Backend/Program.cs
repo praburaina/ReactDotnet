@@ -10,11 +10,8 @@ builder.Services.AddCors(options=>
 var app = builder.Build();
 
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+
     app.MapOpenApi();
-}
 
 //app.UseHttpsRedirection();
 
@@ -32,8 +29,10 @@ app.MapGet("/api/hotels", () =>
     };
 
     return Results.Ok(hotels);
-})
-.WithName("GetWeatherForecast");
+});
+app.MapGet("/",()=>"Hotel Api Is Running");
+app.MapGet("/health",()=>Results.Ok("Healthy"));
+
 
 app.Run();
 
